@@ -1,0 +1,14 @@
+.sidebar {
+  height: 90vh;
+  min-width: 250px;
+  width: 20%;
+  background-color: rgb(229, 225, 225);
+  color: black;
+}
+
+.users {
+  height: 90%;
+  padding-left: 10px;
+  padding-right: 10px;
+  overflow-y: scroll;
+}

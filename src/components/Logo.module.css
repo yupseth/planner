@@ -1,0 +1,10 @@
+.logo {
+  height: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: hotpink;
+  color: aqua;
+  padding-left: 10px;
+  padding-right: 10px;
+}
