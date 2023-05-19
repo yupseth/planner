@@ -1,14 +1,11 @@
 import os
-from http.server import HTTPServer, SimpleHTTPRequestHandler
-from urllib.parse import urlparse
-
-import os
 import json
 import paramiko
 import webbrowser
 from getpass import getpass
 from urllib.parse import urlparse, parse_qs
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import HTTPServer, BaseHTTPRequestHandler, SimpleHTTPRequestHandler
+
 
 PORT = 8000
 INDEXFILE = 'index.html'
