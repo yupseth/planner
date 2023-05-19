@@ -33,7 +33,7 @@ class FakeModReWriteHandle(SimpleHTTPRequestHandler):
             self.copyfile(fin, self.wfile)
 
 
-def server():
+def HOMEserver():
     httpd = HTTPServer(("0.0.0.0", 3000), FakeModReWriteHandle)
     print("Home Server run at port", 3000)
     httpd.serve_forever()
@@ -42,7 +42,7 @@ def server():
 
 def startHomeServer():
     try:
-        server()
+        HOMEserver()
     except OSError:
         print("\nError check if the PORT:[%s] address is already in use!\n", 3000)
     except KeyboardInterrupt:
@@ -207,7 +207,7 @@ class customRequestHandler(BaseHTTPRequestHandler):
             self.send_error(404)
 
 
-def server():
+def APIserver():
     httpd = HTTPServer(("0.0.0.0", 8080), customRequestHandler)
     print("API Server run at port", 8080)
     httpd.serve_forever()
@@ -215,7 +215,7 @@ def server():
 
 def startAPIServer():
     try:
-        server()
+        APIserver()
     except OSError:
         print("\nError check if the PORT:[%s] address is already in use!\n", 8080)
     except KeyboardInterrupt:
