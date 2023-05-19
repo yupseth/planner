@@ -114,23 +114,26 @@ def get_users_data(month, year):
 
 
 class customRequestHandler(BaseHTTPRequestHandler):
-    FRONT_END_DIR = 'index.html'
 
     def end_headers(self):
         self.send_header('Access-Control-Allow-Origin', '*')
         super().end_headers()
 
     def do_GET(self):
-        if self.path.startswith('/home'):
+        if self.path.startswith('/planner'):
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             # Open the front-end HTML file and send its contents
             try:
-                with open('index.html', 'r') as f:
+                FRONT_HOME = os.path.dirname(os.path.abspath(__file__))
+                print(FRONT_HOME)
+                FRONT_END_DIR = os.path.join(FRONT_HOME, 'public\index.html')
+                print('Loaded app: ' + FRONT_END_DIR)
+                with open(FRONT_END_DIR, 'r') as f:
                     self.wfile.write(f.read().encode())
             except:
-                print('Frontend to be implemented.')
+                print('Failed to fetch frontend.')
 
         elif self.path.startswith('/api/calendar'):
             try:
@@ -181,7 +184,7 @@ class customRequestHandler(BaseHTTPRequestHandler):
 
 
 if initialized:
-    server = HTTPServer(('localhost', 8080), customRequestHandler)
+    server = HTTPServer(('localhost', 3000), customRequestHandler)
     print('Started local API host.')
     #webbrowser.open('http://localhost/home')
     #print('Started localhost browser.')
