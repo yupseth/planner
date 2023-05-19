@@ -1,10 +1,54 @@
 import os
+from http.server import HTTPServer, SimpleHTTPRequestHandler
+from urllib.parse import urlparse
+
+import os
 import json
 import paramiko
 import webbrowser
 from getpass import getpass
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
+
+PORT = 8000
+INDEXFILE = 'index.html'
+
+class FakeModReWriteHandle(SimpleHTTPRequestHandler):
+
+    def do_GET(self):
+
+        # Parse query data to find out what was requested
+        parsedParams = urlparse(self.path)
+
+        # See if the file requested exists
+        if os.access('.' + os.sep + parsedParams.path, os.R_OK):
+            # File exists, serve it up
+            SimpleHTTPRequestHandler.do_GET(self)
+
+        # send index.html, but don't redirect
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/html')
+        self.end_headers()
+        with open(INDEXFILE, 'rb') as fin:
+            self.copyfile(fin, self.wfile)
+
+
+def server():
+    httpd = HTTPServer(("0.0.0.0", 3000), FakeModReWriteHandle)
+    print("Home Server run at port", 3000)
+    httpd.serve_forever()
+
+
+
+def startHomeServer():
+    try:
+        server()
+    except OSError:
+        print("\nError check if the PORT:[%s] address is already in use!\n", 3000)
+    except KeyboardInterrupt:
+        print("\nBye Server Down!\n")
+
+
 
 
 initialized = False
@@ -50,7 +94,6 @@ except:
         print('Connection test failure.')
 
 
-
 def get_month_data(month, year):
     remote_script_path = '/opt/planner/getcalendar.py'
     try:
@@ -80,6 +123,7 @@ def get_month_data(month, year):
             return('Unable to connect to remote server.')
     except:
         return('Unable to connect to remote server.')
+
 
 def get_users_data(month, year):
     remote_script_path = '/opt/planner/getusersdata.py'
@@ -114,28 +158,8 @@ def get_users_data(month, year):
 
 
 class customRequestHandler(BaseHTTPRequestHandler):
-
-    def end_headers(self):
-        self.send_header('Access-Control-Allow-Origin', '*')
-        super().end_headers()
-
     def do_GET(self):
-        if self.path.startswith('/planner'):
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-            # Open the front-end HTML file and send its contents
-            try:
-                FRONT_HOME = os.path.dirname(os.path.abspath(__file__))
-                print(FRONT_HOME)
-                FRONT_END_DIR = os.path.join(FRONT_HOME, 'public\index.html')
-                print('Loaded app: ' + FRONT_END_DIR)
-                with open(FRONT_END_DIR, 'r') as f:
-                    self.wfile.write(f.read().encode())
-            except:
-                print('Failed to fetch frontend.')
-
-        elif self.path.startswith('/api/calendar'):
+        if self.path.startswith('/api/calendar'):
             try:
                 query_components = parse_qs(urlparse(self.path).query)
                 month = query_components.get('month', [])[0]
@@ -158,6 +182,7 @@ class customRequestHandler(BaseHTTPRequestHandler):
                 self.wfile.write('Bad Calendar Request :( - sample usage: /api/calendar?month=5&year=2023'.encode())
                 print(f'Error: {e}')
 
+
         elif self.path.startswith('/api/getusers'):
             try:
                 query_components = parse_qs(urlparse(self.path).query)
@@ -168,7 +193,6 @@ class customRequestHandler(BaseHTTPRequestHandler):
                 else:
                     # Handle case when either month or year is missing
                     data = {"error": "User, Month and Year parameters are required."}
-
                 self.send_response(200)
                 self.send_header('Content-type', 'application/json')
                 self.end_headers()
@@ -183,11 +207,29 @@ class customRequestHandler(BaseHTTPRequestHandler):
             self.send_error(404)
 
 
-if initialized:
-    server = HTTPServer(('localhost', 3000), customRequestHandler)
-    print('Started local API host.')
-    #webbrowser.open('http://localhost/home')
-    #print('Started localhost browser.')
-    server.serve_forever()
-else:
-    print('Failed to initialize connection to remote server.')
+def server():
+    httpd = HTTPServer(("0.0.0.0", 8080), customRequestHandler)
+    print("API Server run at port", 8080)
+    httpd.serve_forever()
+
+
+def startAPIServer():
+    try:
+        server()
+    except OSError:
+        print("\nError check if the PORT:[%s] address is already in use!\n", 8080)
+    except KeyboardInterrupt:
+        print("\nBye Server Down!\n")
+
+
+
+import threading
+
+t1 = threading.Thread(target=startHomeServer)
+t2 = threading.Thread(target=startAPIServer)
+
+t1.start()
+t2.start()
+
+t1.join()
+t2.join()
