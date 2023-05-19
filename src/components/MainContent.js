@@ -7,6 +7,7 @@ const MainContent = () => {
     <main className={style.main}>
       <DateContainer text="year" />
       <DateContainer text="month" />
+      <DateContainer text="luni | marti | miercuri | joi se da la coi | vineri | sambata | duminica" />
     </main>
   );
 };
