@@ -1,0 +1,7 @@
+a) Version:
+SELECT sqlite_version();
+3.7.17
+
+b) .tables
+Allusers
+Calendar

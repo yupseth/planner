@@ -1,0 +1,2 @@
+INSERT INTO Allusers (user_id, username, vacations, half_vacations, oncall, personal_vacations, other, count)
+VALUES (1, 'Jane Doe', '18-5-2023, 19-5-2023, 20-5-2023', '16-5-2023', '15-5-2023', '17-5-2023', '14-5-2023', 21);

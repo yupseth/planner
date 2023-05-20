@@ -119,7 +119,6 @@ def get_month_data(month, year):
     except:
         return('Unable to connect to remote server.')
 
-
 def get_users_data(month, year):
     remote_script_path = '/opt/planner/getusersdata.py'
     try:
@@ -153,6 +152,14 @@ def get_users_data(month, year):
     except:
         return('Unable to connect to remote server.')
 
+def update(user_id: int, column_name: str, date: str, operation: str) -> str:
+    if operation == 'add':
+        query = f"UPDATE Allusers SET {column_name} = {column_name} || ',{date}' WHERE user_id = {user_id}"
+    elif operation == 'remove':
+        query = f"UPDATE Allusers SET {column_name} = REPLACE({column_name}, ',{date}', '') WHERE user_id = {user_id}"
+    else:
+        raise ValueError("Invalid operation. Must be 'add' or 'remove'.")
+    return query
 
 class customRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -200,7 +207,24 @@ class customRequestHandler(BaseHTTPRequestHandler):
                 print(f'Error: {e}')
         else:
             self.send_error(404)
-
+            
+    def do_POST(self):
+        if self.path.startswith('/api/update'):
+            content_length = int(self.headers['Content-Length'])
+            post_data = json.loads(self.rfile.read(content_length))
+            print(post_data)
+            # Process the post_data here
+            # For example, you can update a database record with the data in post_data
+            # ...
+            # Send a response to indicate that the update was successful
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            response = {"status": "success"}
+            self.wfile.write(json.dumps(response).encode())
+        else:
+            # Handle other POST requests here
+            pass
 
 def APIserver():
     httpd = HTTPServer(("0.0.0.0", 8080), customRequestHandler)
