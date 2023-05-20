@@ -1,5 +1,5 @@
 API Server:
-  http://localhost:8080/api/getcalendar?month=5&year=2023   | GETs calendar data for month 5 year 2023
+  http://localhost:8080/api/calendar?month=5&year=2023   | GETs calendar data for month 5 year 2023
   http://localhost:8080/api/getusers?month=5&year=2023      | GETs user data for month 5 year 2023
 Home Server:
   http://localhost:3000/                                    | Home page.
