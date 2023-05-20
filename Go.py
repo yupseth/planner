@@ -34,9 +34,6 @@ def HOMEserver():
     httpd = HTTPServer(("0.0.0.0", 3000), FakeModReWriteHandle)
     print("Home Server run at port", 3000)
     httpd.serve_forever()
-
-
-
 def startHomeServer():
     try:
         HOMEserver()
@@ -44,7 +41,6 @@ def startHomeServer():
         print("\nError check if the PORT:[%s] address is already in use!\n", 3000)
     except KeyboardInterrupt:
         print("\nBye Server Down!\n")
-
 
 
 
@@ -182,8 +178,6 @@ class customRequestHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write('Bad Calendar Request :( - sample usage: /api/calendar?month=5&year=2023'.encode())
                 print(f'Error: {e}')
-
-
         elif self.path.startswith('/api/getusers'):
             try:
                 query_components = parse_qs(urlparse(self.path).query)
@@ -212,7 +206,6 @@ def APIserver():
     httpd = HTTPServer(("0.0.0.0", 8080), customRequestHandler)
     print("API Server run at port", 8080)
     httpd.serve_forever()
-
 def startAPIServer():
     try:
         APIserver()
@@ -220,7 +213,6 @@ def startAPIServer():
         print("\nError check if the PORT:[%s] address is already in use!\n", 8080)
     except KeyboardInterrupt:
         print("\nBye Server Down!\n")
-
 
 
 import threading

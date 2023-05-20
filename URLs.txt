@@ -4,5 +4,4 @@ API Server:
 Home Server:
   http://localhost:3000/                                    | Home page.
 
-
 To start the server, run python script "Go" from /planner/build/Go.py
