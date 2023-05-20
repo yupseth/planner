@@ -105,12 +105,14 @@ def get_month_data(month, year):
             stdin, stdout, stderr = ssh.exec_command(command)
             output = stdout.read().decode()
             error = stderr.read().decode()
-            ssh.close()
             if error:
                 # Close the SSH connection
+                ssh.close()
                 return(f"Error occurred: {error}")
             else:
                 # Close the SSH connection
+                ssh.close()
+                output = json.loads(output)
                 return(output)
         except:
             try:
@@ -135,7 +137,7 @@ def get_users_data(month, year):
             ssh.connect(host, port, username, password)
             # Execute the command remotely
             stdin, stdout, stderr = ssh.exec_command(command)
-            output = stdout.read().decode()
+            outputUsers = stdout.read().decode()
             error = stderr.read().decode()
             ssh.close()
             if error:
@@ -143,7 +145,9 @@ def get_users_data(month, year):
                 return(f"Error occurred: {error}")
             else:
                 # Close the SSH connection
-                return(output)
+                ssh.close()
+                outputUsers = json.loads(outputUsers)
+                return(outputUsers)
         except:
             try:
                 ssh.close()
@@ -208,7 +212,6 @@ def APIserver():
     httpd = HTTPServer(("0.0.0.0", 8080), customRequestHandler)
     print("API Server run at port", 8080)
     httpd.serve_forever()
-
 
 def startAPIServer():
     try:
